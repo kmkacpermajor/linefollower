@@ -1,20 +1,20 @@
 #define slowSpeed 230
 #define fastSpeed 255
 
-#define LSO 15      // left sensor outer
-#define RSO 16      // right sensor outer
+#define LSO 3      // left sensor outer
+#define RSO 14      // right sensor outer
 
-#define LSI 17      // left sensor inner
-#define RSI 18      // right sensor inner
+#define LSI 4      // left sensor inner
+#define RSI 13      // right sensor inner
 
-#define LM1 4       // left motor
-#define LM2 3       // left motor
+#define LM1 11       // left motor
+#define LM2 7       // left motor
 
-#define RM1 7       // right motor
-#define RM2 6       // right motor
+#define RM1 6       // right motor
+#define RM2 10       // right motor
 
-#define LPWM 9
-#define RPWM 10
+#define LPWM 12
+#define RPWM 5
 
 void setup()
 
@@ -28,9 +28,6 @@ void setup()
   pinMode(LM2, OUTPUT);
   pinMode(RM1, OUTPUT);
   pinMode(RM2, OUTPUT);
-  
-  analogWrite(LPWM, 150);
-  analogWrite(RPWM, 150);
 }
 
 void loop()
