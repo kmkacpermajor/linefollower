@@ -1,28 +1,28 @@
-#define slowSpeed 230
-#define fastSpeed 255
+#define straightSpeed 160
+#define turnSpeed 255
 
-#define LSO 3      // left sensor outer
-#define RSO 14      // right sensor outer
+#define LSOP 3      // left sensor outer
+#define RSOP 14      // right sensor outer
 
-#define LSI 4      // left sensor inner
-#define RSI 13      // right sensor inner
+#define LSIP 4      // left sensor inner
+#define RSIP 13      // right sensor inner
 
 #define LM1 11       // left motor
 #define LM2 7       // left motor
 
 #define RM1 6       // right motor
-#define RM2 10       // right motor
+#define RM2 8       // right motor
 
-#define LPWM 12
-#define RPWM 5
+#define LPWM 9
+#define RPWM 10
 
 void setup()
 
 {
-  pinMode(LSI, INPUT);
-  pinMode(RSI, INPUT);
-  pinMode(LSO, INPUT);
-  pinMode(RSO, INPUT);
+  pinMode(LSIP, INPUT);
+  pinMode(RSIP, INPUT);
+  pinMode(LSOP, INPUT);
+  pinMode(RSOP, INPUT);
 
   pinMode(LM1, OUTPUT);
   pinMode(LM2, OUTPUT);
@@ -31,44 +31,56 @@ void setup()
 }
 
 void loop()
-
 {
+  // DDRB |= 0b00000011; 
+  // TCCR0A |= 0b10000011;
+  // TCCR1A |= 0b10000011;
+  
+  int LSO = digitalRead(LSOP);
+  int LSI = digitalRead(LSIP);
+  int RSI = digitalRead(RSIP);
+  int RSO = digitalRead(RSOP);
 
-  if(!(digitalRead(LSI)) && !(digitalRead(RSI)) && !(digitalRead(LSO)) && !(digitalRead(RSO)))     // Move Forward
+  if ((LSO && LSI && RSI && RSO)
+  || (!(LSO) && !(LSI) && !(RSI) && !(RSO)))
   {
-    goStraight(slowSpeed);
+    goStraight();
   }
 
-    if((digitalRead(LSI)) && (digitalRead(RSI)) && (digitalRead(LSO)) && (digitalRead(RSO)))     // stop
+  if (LSO && LSI && !RSI && !RSO)
   {
-    stop(slowSpeed);
+    turnLeft();
   }
 
-  if(!(digitalRead(LSI)) && (digitalRead(RSI)) && !(digitalRead(LSO)) && !(digitalRead(RSO)))     // Turn right inner
+  if (!LSO && !LSI && RSI && RSO)
   {
-    turnRight(slowSpeed);
+    turnRight();
   }
 
-  if(!(digitalRead(LSO)) && (digitalRead(RSO)))     // Turn right outer
-  {
-    turnRight(fastSpeed);
+  if (LSO && !LSI && !RSI && !RSO){
+    turnLeft();
   }
 
-  if((digitalRead(LSI)) && !(digitalRead(RSI)) && !(digitalRead(LSO)) && !(digitalRead(RSO)))     // Turn left inner
+  if (!LSO && LSI && !RSI && !RSO)
   {
-    turnLeft(slowSpeed);
+    turnLeft();
   }
 
-  if((digitalRead(LSO)) && !(digitalRead(RSO)))     // Turn left outer
+  if (!LSO && !LSI && !RSI && RSO)
   {
-    turnLeft(fastSpeed);
+    turnRight();
+  }
+
+  if(!LSO && !LSI && RSI && !RSO)
+  {
+    turnRight();
   }
 
 }
 
-void goStraight(int speed){
-  analogWrite(LPWM, speed);
-  analogWrite(RPWM, speed);
+void goStraight(){
+  analogWrite(LPWM, straightSpeed);
+  analogWrite(RPWM, straightSpeed);
 
   digitalWrite(LM1, HIGH);
   digitalWrite(LM2, LOW);
@@ -76,19 +88,9 @@ void goStraight(int speed){
   digitalWrite(RM2, LOW);
 }
 
-void stop(int speed){
-  analogWrite(LPWM, speed);
-  analogWrite(RPWM, speed);
-
-  digitalWrite(LM1, LOW);
-  digitalWrite(LM2, LOW);
-  digitalWrite(RM1, LOW);
-  digitalWrite(RM2, LOW);
-}
-
-void turnLeft(int speed){
-  analogWrite(LPWM, speed);
-  analogWrite(RPWM, speed);
+void turnLeft(){
+  analogWrite(LPWM, turnSpeed);
+  analogWrite(RPWM, turnSpeed);
 
   digitalWrite(LM1, HIGH);
   digitalWrite(LM2, LOW);
@@ -96,9 +98,9 @@ void turnLeft(int speed){
   digitalWrite(RM2, HIGH);
 }
 
-void turnRight(int speed){
-  analogWrite(LPWM, speed);
-  analogWrite(RPWM, speed);
+void turnRight(){
+  analogWrite(LPWM, turnSpeed);
+  analogWrite(RPWM, turnSpeed);
 
   digitalWrite(LM1, LOW);
   digitalWrite(LM2, HIGH);
